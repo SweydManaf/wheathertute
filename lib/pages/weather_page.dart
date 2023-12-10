@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:wheathertute/models/weather_model.dart';
 import 'package:wheathertute/services/weather_service.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
@@ -72,42 +73,44 @@ class _WeatherPageState extends State<WeatherPage> {
       backgroundColor: Colors.grey[800],
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // city name
-            Text(
-              _weather?.cityName ?? "loading city...",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-
-            const SizedBox(
-              height: 30,
+            Column(
+              children: [
+                const Icon(
+                  Icons.location_pin,
+                  color: Colors.white,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Skeletonizer(
+                  enabled: _weather?.cityName == null,
+                  child: Text(
+                    _weather?.cityName.toUpperCase() ?? "loading city...",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             // animation
             Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
 
-            const SizedBox(
-              height: 30,
-            ),
-
             // temperatur
-            Text(
-              '${_weather?.temperature.round() ?? ""}⁰C',
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // weather condition
-            Text(
-              _weather?.mainCondition ?? "",
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            Skeletonizer(
+              enabled: _weather?.temperature == null,
+              child: Text(
+                '${_weather?.temperature.round() ?? ""}⁰',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
